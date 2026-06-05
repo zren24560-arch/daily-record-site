@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日常问题记录</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>日常问题记录</h1>
+      <p>记录问题、整理思路、沉淀经验</p>
+    </header>
+
+    <section class="form-section">
+      <h2>新增记录</h2>
+      <form id="recordForm">
+        <input type="text" id="title" placeholder="问题标题" required />
+        <textarea id="description" placeholder="问题描述" required></textarea>
+        <textarea id="solution" placeholder="解决方案"></textarea>
+        <button type="submit">保存记录</button>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <h2>记录列表</h2>
+      <div id="recordList"></div>
+    </section>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
