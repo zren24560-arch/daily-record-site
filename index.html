@@ -3,32 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>日常问题记录</title>
+  <title>共享问题记录</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1>日常问题记录</h1>
-      <p>记录问题、整理思路、沉淀经验</p>
+      <h1>共享问题记录</h1>
+      <p>所有访问者共享同一份数据，像一个轻量云笔记</p>
     </header>
 
-    <section class="form-section">
+    <section class="panel form-panel">
       <h2>新增记录</h2>
       <form id="recordForm">
-        <input type="text" id="title" placeholder="问题标题" required />
-        <textarea id="description" placeholder="问题描述" required></textarea>
-        <textarea id="solution" placeholder="解决方案"></textarea>
-        <button type="submit">保存记录</button>
+        <div class="form-group">
+          <label for="title">问题标题</label>
+          <input type="text" id="title" placeholder="例如：接口返回 500 错误" required />
+        </div>
+
+        <div class="form-group">
+          <label for="description">问题描述</label>
+          <textarea id="description" placeholder="请输入问题描述" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="solution">解决方案</label>
+          <textarea id="solution" placeholder="请输入解决方案"></textarea>
+        </div>
+
+        <button type="submit" class="btn">保存记录</button>
       </form>
     </section>
 
-    <section class="list-section">
-      <h2>记录列表</h2>
-      <div id="recordList"></div>
+    <section class="panel list-panel">
+      <div class="list-header">
+        <h2>记录列表</h2>
+        <button id="refreshBtn" class="btn secondary">刷新</button>
+      </div>
+      <div id="loading" class="loading">正在加载数据...</div>
+      <div id="recordList" class="record-list"></div>
     </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./script.js"></script>
 </body>
 </html>
