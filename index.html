@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日常问题记录</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background: #f6f7fb;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 15px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .panel h2 {
+      font-size: 20px;
+      margin-bottom: 18px;
+      color: #222;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #4f7cff;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.12);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      border: none;
+      background: #4f7cff;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #3f6ef0;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .record-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .record-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid #eee;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+      transition: 0.2s ease;
+    }
+
+    .record-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.07);
+    }
+
+    .record-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .record-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: #777;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tag.category {
+      background: #eef3ff;
+      color: #4f7cff;
+    }
+
+    .tag.solved {
+      background: #eaf8ee;
+      color: #1f9d55;
+    }
+
+    .tag.unsolved {
+      background: #fff1f0;
+      color: #e74c3c;
+    }
+
+    .record-section {
+      margin-top: 12px;
+    }
+
+    .record-section h4 {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    .record-section p {
+      color: #666;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-delete {
+      background: #ff5f57;
+    }
+
+    .btn-delete:hover {
+      background: #e04d45;
+    }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 40px 20px;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px dashed #ddd;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>日常问题记录</h1>
+      <p>记录问题、沉淀经验、持续复盘</p>
+    </header>
+
+    <div class="layout">
+      <section class="panel">
+        <h2>新增记录</h2>
+        <form id="recordForm">
+          <div class="form-group">
+            <label for="title">问题标题</label>
+            <input type="text" id="title" placeholder="例如：接口返回 500 错误" required />
+          </div>
+
+          <div class="form-group">
+            <label for="date">日期</label>
+            <input type="date" id="date" required />
+          </div>
+
+          <div class="form-group">
+            <label for="category">分类</label>
+            <select id="category">
+              <option value="工作">工作</option>
+              <option value="学习">学习</option>
+              <option value="Bug">Bug</option>
+              <option value="灵感">灵感</option>
+              <option value="待办">待办</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="description">问题描述</label>
+            <textarea id="description" placeholder="详细描述你遇到的问题..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="solution">解决方案</label>
+            <textarea id="solution" placeholder="记录你的排查过程和解决方式..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="status">状态</label>
+            <select id="status">
+              <option value="未解决">未解决</option>
+              <option value="已解决">已解决</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn">保存记录</button>
+        </form>
+      </section>
+
+      <section>
+        <div class="toolbar">
+          <input type="text" id="searchInput" placeholder="搜索标题或描述..." />
+          <select id="filterCategory">
+            <option value="">全部分类</option>
+            <option value="工作">工作</option>
+            <option value="学习">学习</option>
+            <option value="Bug">Bug</option>
+            <option value="灵感">灵感</option>
+            <option value="待办">待办</option>
+          </select>
+          <select id="filterStatus">
+            <option value="">全部状态</option>
+            <option value="已解决">已解决</option>
+            <option value="未解决">未解决</option>
+          </select>
+        </div>
+
+        <div id="recordList" class="record-list"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("recordForm");
+    const titleInput = document.getElementById("title");
+    const dateInput = document.getElementById("date");
+    const categoryInput = document.getElementById("category");
+    const descriptionInput = document.getElementById("description");
+    const solutionInput = document.getElementById("solution");
+    const statusInput = document.getElementById("status");
+
+    const searchInput = document.getElementById("searchInput");
+    const filterCategory = document.getElementById("filterCategory");
+    const filterStatus = document.getElementById("filterStatus");
+    const recordList = document.getElementById("recordList");
+
+    let records = JSON.parse(localStorage.getItem("daily-problem-records")) || [];
+
+    dateInput.value = new Date().toISOString().split("T")[0];
+
+    function saveRecords() {
+      localStorage.setItem("daily-problem-records", JSON.stringify(records));
+    }
+
+    function renderRecords() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const category = filterCategory.value;
+      const status = filterStatus.value;
+
+      const filtered = records.filter(record => {
+        const matchKeyword =
+          record.title.toLowerCase().includes(keyword) ||
+          record.description.toLowerCase().includes(keyword) ||
+          record.solution.toLowerCase().includes(keyword);
+
+        const matchCategory = category ? record.category === category : true;
+        const matchStatus = status ? record.status === status : true;
+
+        return matchKeyword && matchCategory && matchStatus;
+      });
+
+      if (filtered.length === 0) {
+        recordList.innerHTML = `<div class="empty">暂无记录，开始添加你的第一条问题吧。</div>`;
+        return;
+      }
+
+      recordList.innerHTML = filtered
+        .slice()
+        .reverse()
+        .map(record => `
+          <div class="record-item">
+            <div class="record-top">
+              <div>
+                <div class="record-title">${record.title}</div>
+                <div class="meta">
+                  <span>${record.date}</span>
+                  <span class="tag category">${record.category}</span>
+                  <span class="tag ${record.status === '已解决' ? 'solved' : 'unsolved'}">${record.status}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="record-section">
+              <h4>问题描述</h4>
+              <p>${record.description || "暂无内容"}</p>
+            </div>
+
+            <div class="record-section">
+              <h4>解决方案</h4>
+              <p>${record.solution || "暂无内容"}</p>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-delete" onclick="deleteRecord('${record.id}')">删除</button>
+            </div>
+          </div>
+        `)
+        .join("");
+    }
+
+    function deleteRecord(id) {
+      records = records.filter(record => record.id !== id);
+      saveRecords();
+      renderRecords();
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const newRecord = {
+        id: Date.now().toString(),
+        title: titleInput.value.trim(),
+        date: dateInput.value,
+        category: categoryInput.value,
+        description: descriptionInput.value.trim(),
+        solution: solutionInput.value.trim(),
+        status: statusInput.value
+      };
+
+      records.push(newRecord);
+      saveRecords();
+      renderRecords();
+      form.reset();
+      dateInput.value = new Date().toISOString().split("T")[0];
+    });
+
+    searchInput.addEventListener("input", renderRecords);
+    filterCategory.addEventListener("change", renderRecords);
+    filterStatus.addEventListener("change", renderRecords);
+
+    renderRecords();
+  </script>
+</body>
+</html>
