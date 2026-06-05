@@ -1,5 +1,5 @@
-const SUPABASE_URL = "https://yvppdssdbxqfbvnuiulb.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_Uhi-GEGSmeosY1snKFzcCQ_NUMXQITn";
+const SUPABASE_URL = "https://bqnsyycawzrzjvalbrmz.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Y8Fgkr2nmh7Ij7kYscEt9g_oS3-ZWqq";
 
 console.log("URL =", SUPABASE_URL);
 console.log("KEY length =", SUPABASE_ANON_KEY.length);
