@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://yvppdssdbxqfbvnuiulb.supabase.co";
-const SUPABASE_ANON_KEY = "这里替换成你完整复制的 publishable key";
+const SUPABASE_ANON_KEY = "sb_publishable_Uhi-GEGSmeosY1snKFzcCQ_NUMXQITn";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
