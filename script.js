@@ -1,5 +1,18 @@
 const SUPABASE_URL = "https://yvppdssdbxqfbvnuiulb.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2cGRkc3NkYnhxZmJ2bnVpdWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MzM0MTAsImV4cCI6MjA5NjIwOTQxMH0.zukPv4euFKoDIjttLyH4PgHcV6zuH9D9k1uQ7eKph7w";
+const SUPABASE_ANON_KEY = "sb_publishable_Uhi-GEGSmeosY1snKFzcCQ_NUMXQITn";
+
+console.log("URL =", SUPABASE_URL);
+console.log("KEY length =", SUPABASE_ANON_KEY.length);
+console.log("KEY first 30 =", SUPABASE_ANON_KEY.slice(0, 30));
+console.log("KEY last 20 =", SUPABASE_ANON_KEY.slice(-20));
+
+// 检查是否包含非 ASCII 字符
+for (let i = 0; i < SUPABASE_ANON_KEY.length; i++) {
+  const code = SUPABASE_ANON_KEY.charCodeAt(i);
+  if (code > 255) {
+    console.error("发现异常字符，位置:", i, "字符:", SUPABASE_ANON_KEY[i], "编码:", code);
+  }
+}
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -19,10 +32,10 @@ async function testConnection() {
     if (loadingEl) loadingEl.style.display = "none";
 
     if (error) {
+      console.error("Supabase error:", error);
       if (recordList) {
         recordList.innerHTML = `<div class="error">连接失败：${error.message}</div>`;
       }
-      console.error("Supabase error:", error);
       return;
     }
 
@@ -30,19 +43,16 @@ async function testConnection() {
       recordList.innerHTML = `
         <div class="record-item">
           <h3>连接成功</h3>
-          <p>已经成功读取 records 表。</p>
           <pre>${JSON.stringify(data, null, 2)}</pre>
         </div>
       `;
     }
-
-    console.log("连接成功，返回数据：", data);
   } catch (err) {
+    console.error("JS exception:", err);
     if (loadingEl) loadingEl.style.display = "none";
     if (recordList) {
       recordList.innerHTML = `<div class="error">异常：${err.message}</div>`;
     }
-    console.error("JS exception:", err);
   }
 }
 
