@@ -3,183 +3,204 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>日常问题记录</title>
-  <link rel="stylesheet" href="./style.css" />
+  <title>Supabase 文本记录器</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 16px;
+      background: #f8fafc;
+      line-height: 1.6;
+    }
+    h1 { margin-bottom: 8px; }
+    .hint { color: #666; font-size: 14px; margin-bottom: 20px; }
+    .panel {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+    textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      margin-top: 8px;
+    }
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    #status {
+      white-space: pre-wrap;
+      color: #111827;
+    }
+    .record {
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .record:last-child {
+      border-bottom: none;
+    }
+    .meta {
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .content {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .empty {
+      color: #6b7280;
+    }
+  </style>
 </head>
 <body>
+  <h1>Supabase 文本记录器</h1>
+  <div class="hint">输入文本后保存到 Supabase，并可读取最近记录。</div>
 
-  <!-- ===== 认证页面（未登录显示）===== -->
-  <div id="authPage" class="auth-page" style="display:none">
-    <div class="auth-card">
-      <div class="auth-logo">📋</div>
-      <h1 class="auth-title">日常问题记录</h1>
-      <p class="auth-subtitle">登录后与团队共享问题记录</p>
-
-      <!-- Tab 切换 -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">登录</button>
-        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">注册</button>
-      </div>
-
-      <!-- 登录表单 -->
-      <form id="loginForm" class="auth-form">
-        <div class="form-group">
-          <label>邮箱</label>
-          <input type="email" id="loginEmail" placeholder="your@email.com" required />
-        </div>
-        <div class="form-group">
-          <label>密码</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" required />
-        </div>
-        <div id="loginError" class="auth-error" style="display:none"></div>
-        <button type="submit" class="btn btn-primary">登录</button>
-      </form>
-
-      <!-- 注册表单 -->
-      <form id="registerForm" class="auth-form" style="display:none">
-        <div class="form-group">
-          <label>昵称</label>
-          <input type="text" id="regName" placeholder="你的名字" required />
-        </div>
-        <div class="form-group">
-          <label>邮箱</label>
-          <input type="email" id="regEmail" placeholder="your@email.com" required />
-        </div>
-        <div class="form-group">
-          <label>密码 <span class="hint">（至少 6 位）</span></label>
-          <input type="password" id="regPassword" placeholder="••••••••" minlength="6" required />
-        </div>
-        <div id="regError" class="auth-error" style="display:none"></div>
-        <div id="regSuccess" class="auth-success" style="display:none"></div>
-        <button type="submit" class="btn btn-primary">注册账号</button>
-      </form>
+  <div class="panel">
+    <strong>输入文本</strong>
+    <textarea id="content" placeholder="请输入要保存的内容"></textarea>
+    <div class="row">
+      <button id="saveBtn">保存文本</button>
+      <button id="loadBtn">读取最近记录</button>
     </div>
   </div>
 
-  <!-- ===== 主应用（已登录显示）===== -->
-  <div id="appPage" style="display:none">
-
-    <!-- Hero Header -->
-    <div class="header">
-      <div class="header-inner">
-        <div>
-          <h1>📋 日常问题记录</h1>
-          <p>记录问题、整理思路、沉淀经验</p>
-        </div>
-        <div class="user-info" id="userInfo">
-          <div class="avatar" id="userAvatar"></div>
-          <div class="user-detail">
-            <span class="user-name" id="userName"></span>
-            <button class="btn-logout" onclick="logout()">退出</button>
-          </div>
-        </div>
-      </div>
-      <div class="header-stats">
-        <div class="stat-item">
-          <div class="stat-num" id="statTotal">—</div>
-          <div class="stat-label">总记录</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="statSolved">—</div>
-          <div class="stat-label">已解决</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="statToday">—</div>
-          <div class="stat-label">今日新增</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="statMine">—</div>
-          <div class="stat-label">我的记录</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-
-      <!-- 新增记录卡片 -->
-      <div class="card form-section">
-        <div class="card-header">
-          <div class="card-icon">✏️</div>
-          <h2>新增记录</h2>
-          <div class="visibility-toggle">
-            <label class="toggle-label">
-              <input type="checkbox" id="isPublic" checked />
-              <span class="toggle-slider"></span>
-              <span class="toggle-text" id="visibilityText">所有人可见</span>
-            </label>
-          </div>
-        </div>
-        <div class="card-body">
-          <form id="recordForm">
-            <div class="form-group">
-              <label for="title">问题标题 *</label>
-              <input type="text" id="title" placeholder="简短描述遇到的问题" required />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="category">问题分类</label>
-                <select id="category">
-                  <option value="bug">🐛 Bug 修复</option>
-                  <option value="env">⚙️ 环境配置</option>
-                  <option value="perf">⚡ 性能优化</option>
-                  <option value="code">💡 代码问题</option>
-                  <option value="other">📌 其他</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="description">问题描述 *</label>
-              <textarea id="description" placeholder="详细描述问题背景和现象..." required></textarea>
-            </div>
-            <div class="form-group">
-              <label for="solution">解决方案</label>
-              <textarea id="solution" placeholder="记录解决思路和最终方案..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">
-              <span>💾</span> 保存记录
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- 记录列表卡片 -->
-      <div class="card list-section">
-        <div class="card-header">
-          <div class="card-icon">📚</div>
-          <h2>记录列表</h2>
-          <span class="count-badge" id="countBadge">0</span>
-        </div>
-        <div class="card-body">
-          <!-- 搜索 & 筛选 -->
-          <div class="toolbar">
-            <div class="search-wrap">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="searchInput" placeholder="搜索标题或描述..." />
-            </div>
-            <select id="filterCategory" class="filter-select">
-              <option value="">全部分类</option>
-              <option value="bug">🐛 Bug</option>
-              <option value="env">⚙️ 环境</option>
-              <option value="perf">⚡ 性能</option>
-              <option value="code">💡 代码</option>
-              <option value="other">📌 其他</option>
-            </select>
-            <select id="filterScope" class="filter-select">
-              <option value="all">所有人</option>
-              <option value="mine">只看我的</option>
-            </select>
-          </div>
-          <div id="recordList"></div>
-        </div>
-      </div>
-
-    </div>
+  <div class="panel">
+    <strong>状态信息</strong>
+    <div id="status">页面已加载。</div>
   </div>
 
-  <!-- Toast 通知 -->
-  <div class="success-toast" id="toast"></div>
+  <div class="panel">
+    <strong>最近记录</strong>
+    <div id="records" class="empty">暂无数据</div>
+  </div>
 
-  <script src="./script.js"></script>
+  <script>
+    const SUPABASE_URL = "https://efljgmrwqjndofsutkrp.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmbGpnbXJ3cWpuZG9mc3V0a3JwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNzIzMjksImV4cCI6MjA5Njc0ODMyOX0.JnM9YbCuc5efGm6xIyrHUmVPdDNEHn1qLdxQsBEaViU";
+    const TABLE_NAME = "text_notes";
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const contentEl = document.getElementById("content");
+    const statusEl = document.getElementById("status");
+    const recordsEl = document.getElementById("records");
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderRecords(rows) {
+      if (!rows || rows.length === 0) {
+        recordsEl.innerHTML = '<div class="empty">暂无记录</div>';
+        return;
+      }
+
+      recordsEl.innerHTML = rows.map(row => `
+        <div class="record">
+          <div class="meta">ID: ${row.id} | ${row.created_at}</div>
+          <div class="content">${escapeHtml(row.content || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    async function saveText() {
+      const content = contentEl.value.trim();
+
+      if (!content) {
+        setStatus("保存失败：文本内容不能为空。");
+        return;
+      }
+
+      setStatus("正在保存...");
+
+      try {
+        const { data, error, status, statusText } = await supabaseClient
+          .from(TABLE_NAME)
+          .insert([{ content: content }])
+          .select();
+
+        if (error) {
+          throw new Error(
+            `状态码: ${status || "未知"}\n` +
+            `状态描述: ${statusText || "未知"}\n` +
+            `错误信息: ${error.message}`
+          );
+        }
+
+        contentEl.value = "";
+        setStatus("保存成功。");
+        console.log("保存结果：", data);
+        await loadRecords();
+      } catch (err) {
+        setStatus("保存失败：\n" + err.message);
+        console.error("保存失败详情：", err);
+      }
+    }
+
+    async function loadRecords() {
+      setStatus("正在读取记录...");
+
+      try {
+        const { data, error, status, statusText } = await supabaseClient
+          .from(TABLE_NAME)
+          .select("id, content, created_at")
+          .order("id", { ascending: false })
+          .limit(20);
+
+        if (error) {
+          throw new Error(
+            `状态码: ${status || "未知"}\n` +
+            `状态描述: ${statusText || "未知"}\n` +
+            `错误信息: ${error.message}`
+          );
+        }
+
+        renderRecords(data);
+        setStatus(`读取成功，共 ${data.length} 条。`);
+      } catch (err) {
+        setStatus("读取失败：\n" + err.message);
+        console.error("读取失败详情：", err);
+      }
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", saveText);
+    document.getElementById("loadBtn").addEventListener("click", loadRecords);
+
+    loadRecords();
+  </script>
 </body>
 </html>
