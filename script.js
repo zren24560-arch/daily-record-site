@@ -1,8 +1,8 @@
 // ===========================
 // Supabase 初始化
 // ===========================
-const SUPABASE_URL = "https://yvppdssdbxqfbvnuiulb.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2cGRkc3NkYnhxZmJ2bnVpdWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MzM0MTAsImV4cCI6MjA5NjIwOTQxMH0.zukPv4euFKoDIjttLyH4PgHcV6zuH9D9k1uQ7eKph7w";
+const SUPABASE_URL = "https://efljgmrwqjndofsutkrp.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmbGpnbXJ3cWpuZG9mc3V0a3JwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNzIzMjksImV4cCI6MjA5Njc0ODMyOX0.JnM9YbCuc5efGm6xIyrHUmVPdDNEHn1qLdxQsBEaViU";
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
